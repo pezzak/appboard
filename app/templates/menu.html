@@ -1,0 +1,11 @@
+<ul class="nav nav-sidebar">
+{% for menu_env, menu_envs_info in menu.iteritems() %}
+    {% if not menu_envs_info %}
+  <li{% if menu_env == get_env and not menu_envs_info %} class="active"{% endif %}><a href='{{ url_for("index", env=menu_env) }}'>{{ menu_env }}</a></li>
+    {% else %}
+        {% for menu_env_info in menu_envs_info %}
+  <li{% if menu_env == get_env and menu_env_info == get_env_info %} class="active"{% endif %}><a href='{{ url_for("index", env=menu_env, env_info=menu_env_info) }}'>{{ menu_env }} / {{ menu_env_info }}</a></li>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+</ul>

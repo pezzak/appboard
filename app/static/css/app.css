@@ -1,0 +1,20 @@
+/* unvisited link grey */
+#top-menu a:link {
+    color: #777;
+}
+/* visited link grey */
+#top-menu a:visited {
+    color: #777;
+}
+/* mouse over link blue */
+#top-menu a:hover {
+    color: #0CF;
+}
+/* selected link blue */
+#top-menu a:active {
+    color: #0CF;
+}
+/* !IMPORTANT ONLY ADD THIS CLASS TO YOUR ACTIVE PAGE LINK ( Color Blue )*/
+.activePage a {
+    color: #0CF !important
+}

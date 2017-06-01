@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block env_data %}
+          <div class="env-mode">
+            <ul class="nav nav-pills env-mode">
+              <li {% if get_mode != 'history' %} class="active"{% endif %}><a href='{{ url_for("index", env=get_env, env_info=get_env_info) }}'>Current</a></li>
+              <li {% if get_mode == 'history' %} class="active"{% endif %}><a href='{{ url_for("index", env=get_env, env_info=get_env_info, mode="history") }}'>History</a></li>
+            </ul>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>App</th>
+                  <th>Revision</th>
+                  <th>Commit</th>
+                  <th>Branch</th>
+                  <th>Deployed by</th>
+                  <th>Buildname</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% if get_mode != 'history' %}
+                  {% for project in projects %}
+                      <tr>
+                      <td>{{project.name}}</td>
+                      <td>{{projects_info[project.name].revision | nonefilter}}</td>
+                      {% if projects_info[project.name].commit %}
+                          {% if project.name in config.REPO_PROJECT_NAMESPACE %}
+                              <td><a href="{{config.REPO_URL}}/{{config.REPO_PROJECT_NAMESPACE[project.name]}}/{{projects_info[project.name].commit}}">{{projects_info[project.name].commit}}</a></td>
+                          {% else %}
+                              <td>{{projects_info[project.name].commit}}</td>
+                          {% endif %}
+                      {% else %}
+                          <td>{{projects_info[project.name].commit | nonefilter}}</td>
+                      {% endif %}
+                      <td>{{projects_info[project.name].branch | nonefilter}}</td>
+                      <td>{{projects_info[project.name].deploy_user}}</td>
+                      {% if projects_info[project.name].build_name and not projects_info[project.name].revision %}
+                          <td><a href="#" class="buildinfo">{{projects_info[project.name].build_name}}</a></td>
+                      {% else %}
+                          <td>{{projects_info[project.name].build_name | nonefilter}}</td>
+                      {% endif %}
+                      <td>{{projects_info[project.name].timestamp | datetimefilter}}</td>
+                      </tr>
+                  {% endfor %}
+              {% endif %}
+              {% if get_mode == 'history' %}
+                  {% for project_info in projects_info.items %}
+                      <tr>
+                      <td>{{project_info.project.name}}</td>
+                      <td>{{project_info.revision | nonefilter}}</td>
+                      {% if project_info.commit %}
+                          {% if project_info.project.name in config.REPO_PROJECT_NAMESPACE %}
+                              <td><a href="{{config.REPO_URL}}/{{config.REPO_PROJECT_NAMESPACE[project_info.project.name]}}/{{project_info.commit}}">{{project_info.commit}}</a></td>
+                          {% else %}
+                              <td>{{project_info.commit}}</td>
+                          {% endif %}
+                      {% else %}
+                              <td>{{project_info.commit | nonefilter}}</td>
+                      {% endif %}
+                      <td>{{project_info.branch | nonefilter}}</td>
+                      <td>{{project_info.deploy_user}}</td>
+                      {% if project_info.build_name and not project_info.revision %}
+                          <td><a href="#" class="buildinfo">{{project_info.build_name}}</a></td>
+                      {% else %}
+                          <td>{{project_info.build_name | nonefilter}}</td>
+                      {% endif %}
+                      <td>{{project_info.timestamp | datetimefilter}}</td>
+                      </tr>
+                  {% endfor %}
+              {% endif %}
+              </tbody>
+            </table>
+          </div>
+              {% if get_mode == 'history' %}
+
+{{projects_info.count}}
+              <div class="pagination">
+                  <ul class="pagination">
+{% if projects_info.has_prev %}
+                  <li><a href="{{ url_for('index', env=get_env, env_info=get_env_info, mode='history', p = 1) }}">&laquo;</a></li>
+                  <li><a href="{{ url_for('index', env=get_env, env_info=get_env_info, mode='history', p = projects_info.prev_num) }}">{{projects_info.prev_num}}</a></li>
+{% else %}
+                  <li class="disabled"><span>&laquo;</span></li>
+{% endif %}
+                  <li class="active"><span>{{page}}</span></li>
+{% if projects_info.has_next %}
+                  <li><a href="{{ url_for('index', env=get_env, env_info=get_env_info, mode='history', p = projects_info.next_num) }}">{{projects_info.next_num}}</a></li>
+                  <li><a href="{{ url_for('index', env=get_env, env_info=get_env_info, mode='history', p = last_page) }}">&raquo;</a></li>
+{% else %}
+                  <li class="disabled"><span>&raquo;</span></li>
+{% endif %}
+                  </ul>
+              </div>
+              {% endif %}
+
+{% endblock %}
