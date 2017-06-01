@@ -10,7 +10,7 @@ services:
       - "/srv/docker/app/postgres:/var/lib/postgresql/data"
     restart: "always"
   appboard:
-    image: "pezzak/flaskapp:0.0.1"
+    image: "pezzak/appboard:0.0.1"
     volumes:
       - "/srv/docker/app/config/config.py:/app/config.py"
     links:
