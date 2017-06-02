@@ -8,7 +8,7 @@ from flask import abort
 from config import REPO_URL, REPO_PROJECT_NAMESPACE, APPS_PER_PAGE
 from math import ceil
 from flask import make_response
-from config import apiusers
+from config import apiusers, DEFAULT_ENVIRONMENT
 import datetime
 
 auth = HTTPBasicAuth()
@@ -44,7 +44,7 @@ def handle_invalid_usage(error):
     response.status_code = error.status_code
     return response
 
-@app.route('/', defaults={'env': 'production', 'env_info': None})
+@app.route('/', defaults={'env': DEFAULT_ENVIRONMENT, 'env_info': None})
 @app.route('/<env>', defaults={'env_info': None})
 @app.route('/<env>/<env_info>')
 def index(env, env_info):
@@ -82,6 +82,7 @@ def index(env, env_info):
                                              last_page=last_page)
 
 @app.route('/api/env/project_info', methods=['POST'])
+@auth.login_required
 def project():
     if (
         not request.json or
@@ -121,6 +122,7 @@ def project():
     return jsonify({'project_info': instance.id}), 201
 
 @app.route('/api/env/build_info', methods=['POST'])
+@auth.login_required
 def build():
     if (
         not request.json or
@@ -176,7 +178,7 @@ def get_build(buildname):
 def get_repo_url(project):
     res = {}
     if project in REPO_PROJECT_NAMESPACE:
-        res['url'] =  REPO_URL + '/' + REPO_PROJECT_NAMESPACE[project]
+        res['url'] =  REPO_URL + '/' + REPO_PROJECT_NAMESPACE[project] + '/commit'
         return jsonify(res)
     else:
         res['error'] = "project not found"

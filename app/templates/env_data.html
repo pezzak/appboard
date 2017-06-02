@@ -52,7 +52,7 @@
                       <td>{{project_info.revision | nonefilter}}</td>
                       {% if project_info.commit %}
                           {% if project_info.project.name in config.REPO_PROJECT_NAMESPACE %}
-                              <td><a href="{{config.REPO_URL}}/{{config.REPO_PROJECT_NAMESPACE[project_info.project.name]}}/{{project_info.commit}}">{{project_info.commit}}</a></td>
+                              <td><a href="{{config.REPO_URL}}/{{config.REPO_PROJECT_NAMESPACE[project_info.project.name]}}/commit/{{project_info.commit}}">{{project_info.commit}}</a></td>
                           {% else %}
                               <td>{{project_info.commit}}</td>
                           {% endif %}
